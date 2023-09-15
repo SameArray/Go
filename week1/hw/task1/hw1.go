@@ -3,17 +3,15 @@ package main
 import "fmt"
 
 func twoSum(nums []int, target int) []int {
-	numIndices := make(map[int]int)
+	s := make(map[int]int)
 
-	for i, num := range nums {
-		complement := target - num
-		if index, found := numIndices[complement]; found {
-			return []int{index, i}
+	for idx, num := range nums {
+		if pos, ok := s[target-num]; ok {
+			return []int{pos, idx}
 		}
-		numIndices[num] = i
+		s[num] = idx
 	}
-
-	return nil // No solution found
+	return []int{}
 }
 
 func main() {
