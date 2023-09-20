@@ -8,7 +8,7 @@ import (
 func main() {
 	// fmt.Print("Введите число: ")
 	// fmt.Scan(&m)
-	var m int = -1417
+	var m int = 1417
 	result := intToRoman(m)
 	fmt.Print(result)
 }
