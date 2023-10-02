@@ -20,7 +20,7 @@ func (c *Counter) Increment() int {
 func main() {
 	var counters sync.Map
 	wg := &sync.WaitGroup{}
-	results := make(chan string, 300)
+	results := make(chan string, 1)
 	mu := sync.Mutex{}
 
 	for _, key := range []string{"key1", "key2", "key3"} {
