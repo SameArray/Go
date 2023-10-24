@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"net/http"
 )
 
 const AuthToken = "tokenXcxzcasdKLDSAdxc"
@@ -22,6 +24,7 @@ var items = []Item{
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("Authorization")
+		fmt.Println("Received token:", token)
 		if token != AuthToken {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Unauthorized"})
 			c.Abort()
