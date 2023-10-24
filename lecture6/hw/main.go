@@ -44,15 +44,26 @@ func generate(name string, data map[string]interface{}, level int) (string, erro
 		}
 		fields = append(fields, fmt.Sprintf("%s %s `json:\"%s\"`", strings.Title(key), fieldType, key))
 	}
-	return fmt.Sprintf("type %s struct {\n%s\n}\n", name, strings.Join(fields, "\n")), nil
+	return fmt.Sprintf("type %s struct {\n\t%s\n}\n", name, strings.Join(fields, "\n\t")), nil
 }
 
 func main() {
-	jsonStr := `{"name": "Nurzhan", "age": 20, "address": {"city": "Almaty"}}`
-	generatedCode, err := GenerateStructFromJSON("Person", jsonStr)
+	inputJSON := `{"name": "Nurzhan", "age": 20}`
+	expectedStruct := `type MyStruct struct {
+	Name string ` + "`json:\"name\"`" + `
+	Age float64 ` + "`json:\"age\"`" + `
+}`
+
+	result, err := GenerateStructFromJSON("MyStruct", inputJSON)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
-	fmt.Println(generatedCode)
+
+	if !strings.EqualFold(expectedStruct, result) {
+		fmt.Printf("expected:\n%s\ngot:\n%s", expectedStruct, result)
+	} else {
+		fmt.Println("Struct generated successfully:")
+		fmt.Println(result)
+	}
 }

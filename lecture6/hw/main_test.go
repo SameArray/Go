@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestGenerateStructFromJSON(t *testing.T) {
@@ -28,8 +30,9 @@ func TestGenerateStructFromJSON(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error: %v", err)
 			}
-			if got != tt.expected {
-				t.Fatalf("expected:\n%s\ngot:\n%s", tt.expected, got)
+
+			if diff := cmp.Diff(tt.expected, got); diff != "" {
+				t.Fatalf("mismatch (-expected +got):\n%s", diff)
 			}
 		})
 	}
