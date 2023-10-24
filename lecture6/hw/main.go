@@ -6,35 +6,14 @@ import (
 	"strings"
 )
 
-func GenerateStructFromJSON(structName, jsonStr string) (string, error) {
-	var data interface{}
-	if err := json.Unmarshal([]byte(jsonStr), &data); err != nil {
+func GenerateStructFromJSON(name string, data string) (string, error) {
+	var parsedData map[string]interface{}
+	err := json.Unmarshal([]byte(data), &parsedData)
+	if err != nil {
 		return "", err
 	}
 
-	var fields []string
-
-	processData := func(data map[string]interface{}, structName string, depth int) string {
-		if depth > 5 {
-			return ""
-		}
-
-		fields = []string{}
-
-		for key, value := range data {
-			fieldType := getType(value)
-			if fieldType == "object" {
-				nestedStructName := structName + strings.Title(key)
-				fieldType = nestedStructName
-				fields = append(fields, processData(value.(map[string]interface{}), nestedStructName, depth+1))
-			}
-			fields = append(fields, fmt.Sprintf("%s %s `json:\"%s\"`", strings.Title(key), fieldType, key))
-		}
-
-		return fmt.Sprintf("type %s struct {\n%s\n}\n", structName, strings.Join(fields, "\n"))
-	}
-
-	return processData(data.(map[string]interface{}), structName, 1), nil
+	return generate(name, parsedData, 1)
 }
 
 func generate(name string, data map[string]interface{}, level int) (string, error) {
@@ -69,8 +48,11 @@ func generate(name string, data map[string]interface{}, level int) (string, erro
 }
 
 func main() {
-	result := GenerateStructFromJSON("MyStruct", test.input)
-	if !strings.EqualFold(test.expected, result) {
-		t.Errorf("expected:\n%s\ngot:\n%s", test.expected, result)
+	jsonStr := `{"name": "Nurzhan", "age": 20, "address": {"city": "Almaty"}}`
+	generatedCode, err := GenerateStructFromJSON("Person", jsonStr)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
+	fmt.Println(generatedCode)
 }
